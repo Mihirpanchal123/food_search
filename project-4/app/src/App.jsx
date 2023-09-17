@@ -10,8 +10,42 @@ const App = () => {
   const [filteredData, setFilteredData] = useState(null);
   const [Loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedBtn, setSelectedBtn] = useState("all");
 
-  
+  const filterFood = (type) => {
+
+    if(type == "all"){
+      setFilteredData(data);
+      setSelectedBtn("all");
+      return;
+    }
+
+    const filter = data?.filter((food) => 
+      food.type.toLowerCase().includes(type.toLowerCase())
+    );
+
+    setFilteredData(filter);
+    setSelectedBtn(type);
+  }
+
+  const filterBtn = [
+    {
+      name : "All",
+      type : "all",
+    },
+    {
+      name : "Breakfart",
+      type : "breakfast",
+    },
+    {
+      name : "Lunch",
+      type : "lunch",
+    },
+    {
+      name : "Dinner",
+      type : "dinner",
+    }
+  ];
 
   useEffect( () => {
     const fetchFoodData = async () =>{
@@ -36,12 +70,12 @@ const App = () => {
     const searchValue = e.target.value;
 
     if(searchValue == ""){
-      setFilteredData = null;
+      setFilteredData(null);
     }
 
-    const filter = data?.filter((food) => {
-      food.name.toLowercase().includes(searchValue.toLowercase());
-    });
+    const filter = data?.filter((food) => 
+      food.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
 
     setFilteredData(filter);
 
@@ -62,10 +96,12 @@ const App = () => {
       </div>
     </TopContainer>
     <FilterComponent>
-      <Button>All</Button>
-      <Button>Breakfast</Button>
-      <Button>Lunch</Button>
-      <Button>Dinner</Button>
+      {filterBtn.map((value) => (
+        <Button 
+        isSelected={selectedBtn == value.type}
+        key={value.name} onClick={() => filterFood(value.type)}>
+        {value.name} </Button>
+      ))}
     </FilterComponent>
     <FoodCardContainer>
       <FoodCard>
@@ -85,11 +121,16 @@ const FoodCardContainer =styled.section`
 const FoodCard =styled.div``;
 
 export const Button = styled.div`
+outline : 1px solid ${({isSelected}) => (isSelected ? "white" : "null")};
   border-radius: 5px;
   background: #FF4343;
   padding: 6px 12px;
   border : none;
   color : white;
+  cursor : pointer;
+  &:hover {
+    background-color : brown;
+  }
 
 `;
 export const Container = styled.div``;
@@ -115,6 +156,15 @@ const TopContainer = styled.div`
       height : 40px;
       font-size : 16px;
       padding : 4px;
+      &::placeholder{
+        color : white;
+      }
     }
+   }
+
+   @media (0 < width < 600px){
+    flex-direction : column;
+    min-height : 120px;
+    
    }
 `;
