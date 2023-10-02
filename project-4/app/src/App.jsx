@@ -51,7 +51,7 @@ const App = () => {
       setLoading(true);
 
       try {
-        const response = await fetch(BASE_URL);
+        const response = await fetch(process.env.BASE_URL);
         const json = await response.json();
 
         setData(json);
