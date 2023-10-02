@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import SearchResult from './components/SearchResults/SearchResult';
 
-export const BASE_URL = "http://localhost:9000";
 
 const App = () => {
   const [data, setData] = useState(null);
@@ -14,13 +13,13 @@ const App = () => {
 
   const filterFood = (type) => {
 
-    if(type == "all"){
+    if (type == "all") {
       setFilteredData(data);
       setSelectedBtn("all");
       return;
     }
 
-    const filter = data?.filter((food) => 
+    const filter = data?.filter((food) =>
       food.type.toLowerCase().includes(type.toLowerCase())
     );
 
@@ -30,50 +29,50 @@ const App = () => {
 
   const filterBtn = [
     {
-      name : "All",
-      type : "all",
+      name: "All",
+      type: "all",
     },
     {
-      name : "Breakfart",
-      type : "breakfast",
+      name: "Breakfart",
+      type: "breakfast",
     },
     {
-      name : "Lunch",
-      type : "lunch",
+      name: "Lunch",
+      type: "lunch",
     },
     {
-      name : "Dinner",
-      type : "dinner",
+      name: "Dinner",
+      type: "dinner",
     }
   ];
 
-  useEffect( () => {
-    const fetchFoodData = async () =>{
+  useEffect(() => {
+    const fetchFoodData = async () => {
       setLoading(true);
-  
-      try{
+
+      try {
         const response = await fetch(BASE_URL);
         const json = await response.json();
-  
+
         setData(json);
         setFilteredData(json);
         setLoading(false);
-      }catch (error){
+      } catch (error) {
         setError("Unable to fetch food data");
       }
     };
-  
+
     fetchFoodData();
-  } ,[]);
+  }, []);
 
   const searchFood = (e) => {
     const searchValue = e.target.value;
 
-    if(searchValue == ""){
+    if (searchValue == "") {
       setFilteredData(null);
     }
 
-    const filter = data?.filter((food) => 
+    const filter = data?.filter((food) =>
       food.name.toLowerCase().includes(searchValue.toLowerCase())
     );
 
@@ -81,47 +80,47 @@ const App = () => {
 
   };
 
-  if(error) return <div>{error}</div>;
-  if(Loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (Loading) return <div>Loading...</div>;
 
 
 
   return <Container>
     <TopContainer>
       <div className="logo">
-        <img src="/logo.svg" alt="logo"/>
+        <img src="/logo.svg" alt="logo" />
       </div>
       <div className="search">
-        <input onChange={searchFood} placeholder='Search Food'/>
+        <input onChange={searchFood} placeholder='Search Food' />
       </div>
     </TopContainer>
     <FilterComponent>
       {filterBtn.map((value) => (
-        <Button 
-        isSelected={selectedBtn == value.type}
-        key={value.name} onClick={() => filterFood(value.type)}>
-        {value.name} </Button>
+        <Button
+          isSelected={selectedBtn == value.type}
+          key={value.name} onClick={() => filterFood(value.type)}>
+          {value.name} </Button>
       ))}
     </FilterComponent>
     <FoodCardContainer>
       <FoodCard>
-      <SearchResult data={filteredData}/>
+        <SearchResult data={filteredData} />
       </FoodCard>
     </FoodCardContainer>
-    </Container>
+  </Container>
 }
 
 export default App;
 
-const FoodCardContainer =styled.section`
+const FoodCardContainer = styled.section`
    height : calc(100vh - 212px);
    background-image : url("/bg.png");
    background-size : cover;
 `;
-const FoodCard =styled.div``;
+const FoodCard = styled.div``;
 
 export const Button = styled.div`
-outline : 1px solid ${({isSelected}) => (isSelected ? "white" : "null")};
+outline : 1px solid ${({ isSelected }) => (isSelected ? "white" : "null")};
   border-radius: 5px;
   background: #FF4343;
   padding: 6px 12px;
